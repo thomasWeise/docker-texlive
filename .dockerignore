@@ -1,0 +1,9 @@
+*.md
+Dockerfile
+.dockerignore
+*/temp*
+*/*/temp*
+temp?
+*/.git*
+*/*/.git*
+.git?
