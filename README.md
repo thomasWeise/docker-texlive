@@ -22,10 +22,16 @@ You can run this image by using:
 	
 to look around in the image.
 
-## Components
+## Building and Components
+
+The image has the following components:
 
 - [`TeX Live`](http://www.tug.org/texlive/) version 2014
 - [`ghostscript`](http://ghostscript.com/) version 9.06
+
+You can build it with
+
+    docker build -t thomasweise/texlive .
 
 ## Scripts
 
