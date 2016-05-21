@@ -28,7 +28,7 @@ to look around in the image.
 
 In some scenarios, you may need to use fonts that are not freely available under Linux and thus cannot be part of this image. In this case, you would have these fonts in a different folder (which could be your Windows Fonts folder).
 
-You can mount an external fonts folder via providing option `-v /path/to/fonts/:/usr/share/fonts/external/`. Then simply pre-pend `fontcall.sh` before any script or program invocation, e.g., do `fontcall.sh xelatex.sh myDocument`.
+You can mount an external fonts folder via providing option `-v /path/to/fonts/:/usr/share/fonts/external/`, where `/path/to/fonts/` should be replaced with the path to your font folder. Then simply pre-pend `fontcall.sh` before any script or program invocation, e.g., do `fontcall.sh xelatex.sh myDocument`.
 
 A typical example would be the [USTC thesis template](https://github.com/ustctug/ustcthesis) for which a build script called `make.sh` is provided. If you have mounted your thesis draft into folder `/doc`, you would do:
 
@@ -59,7 +59,7 @@ The solution for this problem would be to mount a folder with missing fonts (whi
     cd /doc/
     fontcall.sh make.sh
     
-The script `fontcall.sh` will take care of setting up the external fonts for you. It will also relieve you from the need to do `chmod`. Just prepend `fontcall.sh` before calling any script.
+where `/path/to/fonts/` should be replaced with the path to your font folder. The script `fontcall.sh` will take care of setting up the external fonts for you. It will also relieve you from the need to do `chmod`. Just prepend `fontcall.sh` before calling any script.
 
 ## 2. Building and Components
 
@@ -81,3 +81,4 @@ We provide a set of scripts (in `/bin/`) that can be used for compiling LaTeX do
 - `xelatex.sh <document>` compile the LaTeX `<document>` with XeLaTeX (also do BibTeX)
 - `eps2pdf.sh <document>` convert the EPS file `<document>` to PDF
 - `filterPdf.sh <document>` include as many of the used fonts into a PDF produced from a PS or PDF document `<document>` 
+- `fontcall.sh <commad to call> <arg1> <arg2...>` prepend `fontcall.sh` to any normal command that you would like to invoke and its arguments to make sure that all fonts are properly set up.
