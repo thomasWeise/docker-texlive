@@ -12,7 +12,7 @@ This is a docker container containing an up-to-date TeXLive installation with so
 For compiling some document named `myDocument.tex` in folder `/my/path/to/document/` with `xelatex.sh`, you would do something like:
 
     docker run -v /my/path/to/document/:/doc/ -t -i thomasweise/texlive /bin/bash -l
-    cd `/doc/`
+    cd '/doc/'
     pdflatex.sh myDocument
     exit
 
