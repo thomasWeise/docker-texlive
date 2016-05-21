@@ -60,6 +60,6 @@ RUN export LANG=C.UTF-8 &&\
     rm -rf /var/lib/apt/lists/* &&\    
     rm -f /etc/ssh/ssh_host_*
     
-VOLUME ["/doc/", "/fonts/"]
+VOLUME ["/doc/", "/usr/share/fonts/external/"]
 
 ADD scripts /bin/
