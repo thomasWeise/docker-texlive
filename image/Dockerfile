@@ -15,7 +15,9 @@ RUN export LANG=C.UTF-8 &&\
     apt-get autoclean -y &&\
     apt-get autoremove -y &&\
     apt-get update &&\
+# install utilities
     apt-get install -f -y apt-utils &&\
+# install some nice chinese fonts
     apt-get install -f -y fonts-arphic-bkai00mp \
                           fonts-arphic-bsmi00lp \
                           fonts-arphic-gbsn00lp \
@@ -24,17 +26,21 @@ RUN export LANG=C.UTF-8 &&\
                           fonts-arphic-uming \
                           ttf-wqy-zenhei \
                           xfonts-intl-chinese \
-                          xfonts-intl-chinese-big &&\  
+                          xfonts-intl-chinese-big &&\
+# install TeX Live and ghostscript
     apt-get install -f -y ghostscript=9.06* \
                           latex-cjk-common=4.8.3* \
                           latex-cjk-chinese=4.8.3* \ 
                           texlive-full=2014.* \
                           texlive-fonts-extra=2014.* \
                           texlive-fonts-recommended=2014.* \
+                          texlive-math-extra=2014.* \
                           texlive-lang-cjk=2014.* \
                           texlive-luatex=2014.* \
                           texlive-pstricks=2014.* \
+                          texlive-science=2014.* \
                           texlive-xetex=2014.* &&\
+# free huge amount of unused space
     apt-get purge -f -y texlive-fonts-extra-doc \
                         texlive-fonts-recommended-doc \
                         texlive-humanities-doc \
@@ -45,6 +51,7 @@ RUN export LANG=C.UTF-8 &&\
                         texlive-pictures-doc \
                         texlive-pstricks-doc \
                         texlive-science-doc &&\
+# clean up all temporary files 
     apt-get clean &&\
     apt-get autoclean -y &&\
     apt-get autoremove -y &&\
@@ -53,4 +60,6 @@ RUN export LANG=C.UTF-8 &&\
     rm -rf /var/lib/apt/lists/* &&\    
     rm -f /etc/ssh/ssh_host_*
     
+VOLUME ["/doc/", "/fonts/"]
+
 ADD scripts /bin/
