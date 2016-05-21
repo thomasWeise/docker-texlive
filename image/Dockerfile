@@ -7,14 +7,24 @@
 FROM debian:8.4
 MAINTAINER Thomas Weise <tweise@ustc.edu.cn>
 
-RUN echo 'deb http://httpredir.debian.org/debian jessie-backports main' >> /etc/apt/sources.list.d/jessie-backports.list &&\
-    export LANG=C.UTF-8 &&\
+RUN export LANG=C.UTF-8 &&\
+    export DEBIAN_FRONTEND=noninteractive &&\
+    echo 'deb http://httpredir.debian.org/debian jessie-backports main' >> /etc/apt/sources.list.d/jessie-backports.list &&\
     apt-get clean &&\
     apt-get update &&\
     apt-get autoclean -y &&\
     apt-get autoremove -y &&\
     apt-get update &&\
-    apt-get install -f -y apt-utils &&\    
+    apt-get install -f -y apt-utils &&\
+    apt-get install -f -y fonts-arphic-bkai00mp \
+                          fonts-arphic-bsmi00lp \
+                          fonts-arphic-gbsn00lp \
+                          fonts-arphic-gkai00mp \
+                          fonts-arphic-ukai \
+                          fonts-arphic-uming \
+                          ttf-wqy-zenhei \
+                          xfonts-intl-chinese \
+                          xfonts-intl-chinese-big &&\  
     apt-get install -f -y ghostscript=9.06* \
                           latex-cjk-common=4.8.3* \
                           latex-cjk-chinese=4.8.3* \ 
