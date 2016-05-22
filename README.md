@@ -26,7 +26,7 @@ to look around in the image.
 
 ### 1.2. Fonts
 
-In some scenarios, you may need to use fonts that are not freely available under Linux and thus cannot be part of this image. In this case, you would have these fonts in a different folder (which could be your Windows Fonts folder).
+In some scenarios, you may need to use fonts that are not freely available under Linux and thus cannot be part of this image. In this case, you would have these fonts in a different folder (which could be your Windows Fonts folder). You can then use these fonts with XeLaTeX.
 
 You can mount an external fonts folder via providing option `-v /path/to/fonts/:/usr/share/fonts/external/`, where `/path/to/fonts/` should be replaced with the path to your font folder. Then simply pre-pend `fontcall.sh` before any script or program invocation, e.g., do `fontcall.sh xelatex.sh myDocument`.
 
