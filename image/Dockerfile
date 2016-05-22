@@ -4,12 +4,10 @@
 # This is an image with a basic TeX Live installation.
 # 
 # 
-FROM debian:8.4
+FROM ubuntu:16.04
 MAINTAINER Thomas Weise <tweise@ustc.edu.cn>
 
 RUN export LANG=C.UTF-8 &&\
-    export DEBIAN_FRONTEND=noninteractive &&\
-    echo 'deb http://httpredir.debian.org/debian jessie-backports main' >> /etc/apt/sources.list.d/jessie-backports.list &&\
     apt-get clean &&\
     apt-get update &&\
     apt-get autoclean -y &&\
@@ -28,18 +26,18 @@ RUN export LANG=C.UTF-8 &&\
                           xfonts-intl-chinese \
                           xfonts-intl-chinese-big &&\
 # install TeX Live and ghostscript
-    apt-get install -f -y ghostscript=9.06* \
-                          latex-cjk-common=4.8.3* \
-                          latex-cjk-chinese=4.8.3* \ 
-                          texlive-full=2014.* \
-                          texlive-fonts-extra=2014.* \
-                          texlive-fonts-recommended=2014.* \
-                          texlive-math-extra=2014.* \
-                          texlive-lang-cjk=2014.* \
-                          texlive-luatex=2014.* \
-                          texlive-pstricks=2014.* \
-                          texlive-science=2014.* \
-                          texlive-xetex=2014.* &&\
+    apt-get install -f -y ghostscript=9.18* \
+                          latex-cjk-common=4.8* \
+                          latex-cjk-chinese=4.8* \ 
+                          texlive-full=2015.2016* \
+                          texlive-fonts-extra=2015.2016* \
+                          texlive-fonts-recommended=2015.2016* \
+                          texlive-math-extra=2015.2016* \
+                          texlive-lang-cjk=2015.2016* \                          
+                          texlive-luatex=2015.2016* \
+                          texlive-pstricks=2015.2016* \
+                          texlive-science=2015.2016* \
+                          texlive-xetex=2015.2016* &&\
 # free huge amount of unused space
     apt-get purge -f -y texlive-fonts-extra-doc \
                         texlive-fonts-recommended-doc \

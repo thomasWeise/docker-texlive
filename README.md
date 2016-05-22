@@ -5,7 +5,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/thomasweise/texlive.svg)](https://hub.docker.com/r/thomasweise/texlive/)
 [![Docker Stars](https://img.shields.io/docker/stars/thomasweise/texlive.svg)](https://hub.docker.com/r/thomasweise/texlive/)
 
-This is a docker container containing an up-to-date TeXLive installation with some support scripts.
+This is a docker container containing a TeXLive installation (version 2015.2016) with some support scripts.
 
 ## 1. Usage
 
