@@ -1,0 +1,4 @@
+#!/bin/bash -
+
+# This is a pseudo-sudo command, since inside the container we do not need sudo.
+"$1" "${@:2}"
