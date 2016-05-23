@@ -5,7 +5,7 @@
 ## $2 document to compile
 ## $3 post-processing command, if any, executed as $3 "x" where "x" is produced pdf
 
-echo "Welcome to the [La|LuaLa|Pdf|XeLa]TeX compiler script."
+echo "Welcome to the [La|LuaLa|PdfLa|XeLa]TeX compiler script."
 
 # strict error handling
 set -o pipefail  # trace ERR through pipes
@@ -94,7 +94,7 @@ while [ "$oldAuxHash" != "$auxHash" ] || \
   
   echo "Finished build cycle $cycle."
     
-  if [ "$cycle" -ge 200 ]; then
+  if (("$cycle" > 200)) ; then
     echo "Something odd is happening: We have performed $cycle cycles. That's too many. Let's quit."
     break
   fi
