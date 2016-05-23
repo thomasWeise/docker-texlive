@@ -136,6 +136,10 @@ rm "${document}.synctex.gz" || true
 rm "${document}.toc" || true
 rm "${document}.vrb" || true
 
+if [ -f "${document}.pdf" ]; then 
+  chmod 777 "${document}.pdf"
+fi
+
 if [[ -n "$post" ]]
 then
   echo "The post-processing command '$post' was specified, executing '$post \"${document}.pdf\"'."
