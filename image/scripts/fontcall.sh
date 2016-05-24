@@ -32,11 +32,11 @@ else
 fi
 
 cd "$currentDir"
-if [ -f "./$script" ]; then
+if [ -f "$currentDir/$script" ]; then
   echo "Script exists in current folder."
-  chmod +X "./$script"
-  ./$script "${@:2}"
+  chmod +x "$currentDir/$script"
+  "$currentDir/$script" "${@:2}"
 else
   echo "Script is assumed to be in /bin."
-  $script "${@:2}"
+  "$script" "${@:2}"
 fi
