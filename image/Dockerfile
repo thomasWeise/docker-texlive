@@ -67,3 +67,5 @@ RUN export LANG=C.UTF-8 &&\
 VOLUME ["/doc/", "/usr/share/fonts/external/"]
 
 ADD scripts /bin/
+
+ENTRYPOINT ["/bin/__boot__.sh"]
