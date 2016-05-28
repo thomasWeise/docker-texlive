@@ -8,15 +8,15 @@ This is a Docker image containing a [TeX Live](https://en.wikipedia.org/wiki/TeX
 
 ## 0. Installing Docker
 
-Docker can be understand following the guidelines below:
+Docker can be installed following the guidelines below:
 
-* for [Linux](https://docs.docker.com/linux/step_one/)
+* for [Linux](https://docs.docker.com/linux/step_one/), you can run  `curl -fsSL https://get.docker.com/ | sh` on your command line and everything is done automatically (if you have `curl` installed, which is normally the case),
 * for [Windows](https://docs.docker.com/windows/step_one/)
-* for [MacOS](https://docs.docker.com/mac/step_one/)
+* for [Mac OS](https://docs.docker.com/mac/step_one/)
 
 ## 1. Usage
 
-Below, we discuss the various parameters that you can pass to this image when running it. If you have installed Docker, you do not need to make any additional provisions or take any actions: If you do `docker run -t -i thomasweise/texlive` or something like that (see below), the image will automatically be downloaded and installed from [docker hub](https://hub.docker.com/).
+Below, we discuss the various parameters that you can pass to this image when running it. If you have installed Docker, you do not need to make any additional provisions or take any actions: If you do `docker run -t -i thomasweise/texlive` or something like that (see below), the image will automatically be downloaded and installed from [docker hub](https://hub.docker.com/). Once the image is running, you are presented with a Bash shell at which you can execute commands normally, as if it was your own (Linux) system. The main purpose is that you can compile LaTeX documents with this image. When you are done, you can leave it via `exit`.
 
 ### 1.1. Base Usage
 
@@ -27,7 +27,7 @@ For compiling some document named `myDocument.tex` in folder `/my/path/to/docume
     xelatex.sh myDocument
     exit
     
-This should leave the compiled PDF file in folder `/my/path/to/document/`.
+This should leave the compiled PDF file in folder `/my/path/to/document/`. If you are not using my pre-defined scripts for building (see below under point 3.1), I recommend doing `chmod 777 myDocument.pdf` after the compilation, to ensure that the produced document can be accessed inside your real (host) system's user, and not just from the Docker container. 
 
 The first line of the above example (`docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive`) will start the docker container and you will find yourself at the command line prompt of the (Bash) shell running inside the container. In the following lines, we execute commands inside this container and with `exit`, we close/shut down the container and return to the original terminal from which you started.
 
@@ -35,7 +35,7 @@ The `-v sourcepath:destpath` options are optional. They allow you to "mount" a f
 
 If you just want to use (or snoop around in) the image without mounting external folders, you can run this image by using:
 
-    docker run -t -i thomasweise/texlive:<VERSION>
+    docker run -t -i thomasweise/texlive
 
 
 ### 1.2. Fonts
