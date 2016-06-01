@@ -7,17 +7,17 @@ echo "Filtering document '$1' in order to include as many fonts as possible."
 
 source="$1"
 name="${source%%.*}"
-dest="${name}.pdf"
+dest="$name.pdf"
 
-if [ -f "${dest}" ]; then
-  useSource="${name}.original.pdf"
-  echo "Creating backup '${useSource}' of '${dest}'."
-  cp "${dest}" "${useSource}"
+if [ -f "$dest" ]; then
+  useSource="$name.original.pdf"
+  echo "Creating backup '$useSource' of '$dest'."
+  cp "$dest" "$useSource"
 else
-  useSource="${source}"
+  useSource="$source"
 fi
 
-echo "Filtering '${useSource}' to '${dest}'."
+echo "Filtering '$useSource' to '$dest'."
 
 gs -q -dEmbedAllFonts=true -dSubsetFonts=true -dCompressFonts=true \
    -dOptimize=true -dPreserveCopyPage=false -dPreserveEPSInfo=false \
@@ -28,7 +28,7 @@ gs -q -dEmbedAllFonts=true -dSubsetFonts=true -dCompressFonts=true \
    -dDownsampleColorImages=false -dDetectDuplicateImages=true \
    -dHaveTransparency=true -dFastWebView=false \
    -dNOPAUSE -dQUIET -dBATCH -dSAFER -sDEVICE=pdfwrite \
-   -dAutoRotatePages=/PageByPage -sOutputFile="${dest}" "${useSource}" \
+   -dAutoRotatePages=/PageByPage -sOutputFile="$dest" "$useSource" \
    -c ".setpdfwrite <</NeverEmbed [ ]>> setdistillerparams"
 
 echo "Done filtering document '$1'."

@@ -11,10 +11,10 @@ set -o errexit   # set -e : exit the script if any statement returns a non-true 
 echo "Welcome MinLaTeX tool chain."
 echo "We will invoke several pdf-LaTeX compilers in a row in the hope to obtain the smallest possible output."
 
-document="$1"
+document="${1%%.*}"
 echo "You want to compile document '$document'."
 
-currentDir=`pwd`
+currentDir=$(pwd)
 scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$currentDir"
 

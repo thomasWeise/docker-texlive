@@ -3,7 +3,6 @@
 ## [La|LuaLa|Pdf|XeLa]TeX Compiler Script
 ## $1 executable
 ## $2 document to compile
-## $3 post-processing command, if any, executed as $3 "x" where "x" is produced pdf
 
 echo "Welcome to the [La|LuaLa|PdfLa|XeLa]TeX compiler script."
 
@@ -14,14 +13,12 @@ set -o nounset   # set -u : exit the script if you try to use an uninitialised v
 set -o errexit   # set -e : exit the script if any statement returns a non-true return value
 
 program="$1"
-echo "You have chosen the '$program' compiler."
+echo "You have chosen the '$program' compiler with options '${@:3}'."
 
 document="${2%%.*}"
 echo "You want to compile document '$document'."
 
-post=${3:-}
-
-currentDir=`pwd`
+currentDir=$(pwd)
 echo "Your current working directory is '$currentDir'."
 
 scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -29,23 +26,23 @@ echo "This script is in directory '$scriptDir', where we also will look for othe
 
 cd "$currentDir"
 echo "First we will do some cleaning up temporary files from other LaTeX runs and also delete any pre-existing version of '$document.pdf'."
-rm "${document}.aux" || true
-rm "${document}.bbl" || true
-rm "${document}.blg" || true
-rm "${document}.dvi" || true
-rm "${document}.ent" || true
-rm "${document}.idx" || true
-rm "${document}.log" || true
-rm "${document}.nav" || true
-rm "${document}.out" || true
-rm "${document}.out.ps" || true
-rm "${document}.pdf" || true
-rm "${document}.ps" || true
-rm "${document}.snm" || true
-rm "${document}.synctex" || true
-rm "${document}.synctex.gz" || true
-rm "${document}.toc" || true
-rm "${document}.vrb" || true
+rm "$document.aux" || true
+rm "$document.bbl" || true
+rm "$document.blg" || true
+rm "$document.dvi" || true
+rm "$document.ent" || true
+rm "$document.idx" || true
+rm "$document.log" || true
+rm "$document.nav" || true
+rm "$document.out" || true
+rm "$document.out.ps" || true
+rm "$document.pdf" || true
+rm "$document.ps" || true
+rm "$document.snm" || true
+rm "$document.synctex" || true
+rm "$document.synctex.gz" || true
+rm "$document.toc" || true
+rm "$document.vrb" || true
 
 echo "We will perform runs of $program/BibTeX until no internal files change anymore."
 
@@ -64,8 +61,15 @@ while [ "$oldAuxHash" != "$auxHash" ] || \
   oldBblHash=$bblHash
 
   echo "Running '$program'."
-  ${program} "${document}"
- 
+  set +o errexit
+  "$program" "${@:3}" "$document"
+  retVal=$?
+  set -o errexit
+  if(("$retVal" != 0)) ; then
+    echo "Error: Program '$program' returned '$retVal' when compiling '$document'. Now exiting."
+    exit "$retVal"
+  fi
+  
   for i in *.aux; do
     if [ "$i" != "$document"] && \
        [ "$i" != "$document.aux"] ; then
@@ -74,7 +78,7 @@ while [ "$oldAuxHash" != "$auxHash" ] || \
     fi
   done
   echo "Applying 'bibtex' to '$document'."
-  bibtex "${document}"
+  bibtex "$document"
  
   auxHash=""
   for i in *.aux; do
@@ -99,52 +103,46 @@ done
 echo "The tool chain '$program'+BibTeX has been executed until nothing changed anymore."
 echo "We now ensure that a proper pdf is built."
 
-if [ -f "${document}.pdf" ]; then
-  echo "Pdf file '${document}.pdf' was produced: we will filter it in order to include all fonts."
-  "$scriptDir/filterPdf.sh" "${document}.pdf"
-  rm "${document}.original.pdf"
+if [ -f "$document.pdf" ]; then
+  echo "Pdf file '$document.pdf' was produced: we will filter it in order to include all fonts."
+  "$scriptDir/filterPdf.sh" "$document.pdf"
+  rm "$document.original.pdf"
 else
-  echo "No pdf file '${document}.pdf' was produced."
-  if [ ! -f "${document}.ps" ]; then
-    echo "No postscript (.ps) file '${document}.ps' was produced."
-    if [ -f "${document}.dvi" ]; then
-      echo "The dvi file '${document}.dvi' was produced, converting it to postscript (.ps)."      
-      dvips "${document}"
+  echo "No pdf file '$document.pdf' was produced."
+  if [ ! -f "$document.ps" ]; then
+    echo "No postscript (.ps) file '$document.ps' was produced."
+    if [ -f "$document.dvi" ]; then
+      echo "The dvi file '$document.dvi' was produced, converting it to postscript (.ps)."      
+      dvips "$document"
     fi
   fi
-  if [ -f "${document}.ps" ]; then
-    echo "A postscript (.ps) file '${document}.ps' was found, converting it to pdf."
-    "$scriptDir/filterPdf.sh" "${document}.ps"
+  if [ -f "$document.ps" ]; then
+    echo "A postscript (.ps) file '$document.ps' was found, converting it to pdf."
+    "$scriptDir/filterPdf.sh" "$document.ps"
   fi
 fi
 
 echo "Now cleaning up temporary files."
-rm "${document}.aux" || true
-rm "${document}.bbl" || true
-rm "${document}.blg" || true
-rm "${document}.dvi" || true
-rm "${document}.ent" || true
-rm "${document}.idx" || true
-rm "${document}.log" || true
-rm "${document}.nav" || true
-rm "${document}.out" || true
-rm "${document}.out.ps" || true
-rm "${document}.ps" || true
-rm "${document}.snm" || true
-rm "${document}.synctex" || true
-rm "${document}.synctex.gz" || true
-rm "${document}.toc" || true
-rm "${document}.vrb" || true
+rm "$document.aux" || true
+rm "$document.bbl" || true
+rm "$document.blg" || true
+rm "$document.dvi" || true
+rm "$document.ent" || true
+rm "$document.idx" || true
+rm "$document.log" || true
+rm "$document.nav" || true
+rm "$document.out" || true
+rm "$document.out.ps" || true
+rm "$document.ps" || true
+rm "$document.snm" || true
+rm "$document.synctex" || true
+rm "$document.synctex.gz" || true
+rm "$document.toc" || true
+rm "$document.vrb" || true
 
-if [ -f "${document}.pdf" ]; then
+if [ -f "$document.pdf" ]; then
   echo "We change the access permissions of the produced document '$document.pdf' to 777." 
-  chmod 777 "${document}.pdf"
-fi
-
-if [[ -n "$post" ]]
-then
-  echo "The post-processing command '$post' was specified, now executing '$post \"${document}.pdf\"'."
-  $post "${document}.pdf"
+  chmod 777 "$document.pdf"
 fi
 
 echo "[La|LuaLa|Pdf|XeLa]TeX compilation finished."
