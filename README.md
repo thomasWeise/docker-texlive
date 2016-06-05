@@ -20,7 +20,7 @@ Below, we discuss the various parameters that you can pass to this image when ru
 
 ### 1.1. Base Usage
 
-For compiling some document named `myDocument.tex` in folder `/my/path/to/document/` with `xelatex.sh` and use fonts in folder `/path/to/fonts/`, you would type something like the command below into a normal terminal (Linux), the *Docker Quickstart Terminal* (Mac OS), or the *Docker Toolbox Terminal* (Windows):
+For compiling some document named `myDocument.tex` in folder `/my/path/to/document/` with `xelatex.sh` and using additional fonts in folder `/path/to/fonts/`, you would type something like the command below into a normal terminal (Linux), the *Docker Quickstart Terminal* (Mac OS), or the *Docker Toolbox Terminal* (Windows):
 
     docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive
     xelatex.sh myDocument
