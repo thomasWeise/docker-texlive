@@ -55,8 +55,9 @@ RUN export LANG=C.UTF-8 &&\
                         texlive-pictures-doc \
                         texlive-pstricks-doc \
                         texlive-science-doc &&\
-# ensure that external fonts folder exists
+# ensure that external fonts and doc folders exists
     mkdir /usr/share/fonts/external/ &&\
+    mkdir /doc/ &&\
 # clean up all temporary files 
     apt-get clean &&\
     apt-get autoclean -y &&\
