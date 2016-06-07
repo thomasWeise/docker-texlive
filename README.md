@@ -16,9 +16,27 @@ Docker can be installed following the guidelines below:
 
 ## 1. Usage
 
-Below, we discuss the various parameters that you can pass to this image when running it. If you have installed Docker, you do not need to make any additional provisions or take any actions: If you do `docker run -t -i thomasweise/texlive` or something like that (see below), the image will automatically be downloaded and installed from [docker hub](https://hub.docker.com/). Once the image is running, you are presented with a Bash shell at which you can execute commands normally, as if it was your own (Linux) system. The main purpose is that you can compile LaTeX documents with this image. When you are done, you can leave it via `exit`.
+Below, we discuss the various parameters that you can pass to this image when running it. If you have installed Docker, you do not need to perform any additional installations: The first time you do `docker run -t -i thomasweise/texlive` or something like that (see below), the image will automatically be downloaded and installed from [docker hub](https://hub.docker.com/).
 
-### 1.1. Base Usage
+There are two basic use cases of this image:
+
+1. Execution of a single command or script
+2. Providing a shell where you can use all the standard LaTeX commands and our helper scripts 
+
+Additionally, there are two ways to provide data to the container:
+
+1. Mounting the folder where the LaTeX document you want to compile is located: This step is necessary..
+2. Mounting a folder with additional fonts needed for compiling your document: This is optional.
+
+The common form of the command is as follows:
+
+    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive COMMAND ARG1 ARG2...
+    
+Where
+
+* `/my/path/to/document/` must be replaced with the path to the folder containing the LaTeX document that you want to compile. This folder will be made available as folder `/doc/` inside the container. If you use the image without command parameters (see below), you will get a bash command prompt inside this `/doc/` folder.
+* Sometimes you may need additional fonts to compile your LaTeX document. An example for this situation is if you use something like the [USTC thesis template](https://github.com/ustctug/ustcthesis), which needs fonts such as SimHei from Windows, which are not available under Linux. In this case, you can use the *optional* `-v /path/to/fonts/:/usr/share/fonts/external/` parameter. Here, `/path/to/fonts/` must be replaced with a path to a folder containing these fonts. If you do not need additional fonts, you can leave the whole `-v /path/to/fonts/:/usr/share/fonts/external/` away.
+* *Optinally* you can also provide a single command that should be executed when the container starts (along with its arguments). This is what the `COMMAND ARG1 ARG2...` in the above command line stand for. If you specify such a command, the container will start up, execute the command, and then shut down. If you do not provide such a command, the container will start up and provide you a bash prompt in folder `/doc/`.
 
 For compiling some document named `myDocument.tex` in folder `/my/path/to/document/` with `xelatex.sh` and using additional fonts in folder `/path/to/fonts/`, you would type something like the command below into a normal terminal (Linux), the *Docker Quickstart Terminal* (Mac OS), or the *Docker Toolbox Terminal* (Windows):
 
@@ -26,9 +44,13 @@ For compiling some document named `myDocument.tex` in folder `/my/path/to/docume
     xelatex.sh myDocument
     exit
     
-This should leave the compiled PDF file in folder `/my/path/to/document/`. If you are not using my pre-defined scripts for building (see below under point 3.1), I recommend doing `chmod 777 myDocument.pdf` after the compilation, to ensure that the produced document can be accessed inside your real (host) system's user, and not just from the Docker container. 
+Alternatively, you could also do
 
-The first line of the above example (`docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive`) will start the docker container and you will find yourself at the command line prompt of the (Bash) shell running inside the container. In the following lines, we execute commands inside this container and with `exit`, we close/shut down the container and return to the original terminal from which you started.
+    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive xelatex.sh myDocument
+    
+The first version starts the container and leaves you at the command prompt. You can now compile your document using our `xelatex.sh` helper script, then you `exit` the container. In the second version, you directly provide the command to the container. The container executes it and then directly exits.
+  
+Both should leave the compiled PDF file in folder `/my/path/to/document/`. If you are not using my pre-defined scripts for building (see below under point 3.1), I recommend doing `chmod 777 myDocument.pdf` after the compilation, to ensure that the produced document can be accessed inside your real (host) system's user, and not just from the Docker container. If you directly provide a single command for execution, the container attempts to heuristically find your produced `pdf` and to set its permissions correctly. 
 
 The `-v sourcepath:destpath` options are optional. They allow you to "mount" a folder (`sourcepath`) from your local system into the Docker container, where it becomes available as path `destpath`. We can use this method to allow the LaTeX compiler running inside the container to work on your LaTeX documents by mounting their folder into a folder named `/doc/`, for instance. But we can also mount an external folder with fonts into the Linux font directory structure. For this purpose, please always mount your local font directory into `/usr/share/fonts/external/`. 
 
@@ -36,16 +58,9 @@ If you just want to use (or snoop around in) the image without mounting external
 
     docker run -t -i thomasweise/texlive
 
+Another example for the use of the syntax for directly passing in a single command for execution is compiling a thesis based on the [USTC thesis template](https://github.com/ustctug/ustcthesis). Such documents can be compiled using `make`, so you could do something like
 
-### 1.2. Fonts
-
-In some scenarios, you may need to use fonts that are not freely available under Linux and thus cannot be part of this image. In this case, you would have these fonts in a different folder (which could be your Windows Fonts folder). You can then use these fonts with XeLaTeX.
-
-You can mount an external fonts folder via providing option `-v /path/to/fonts/:/usr/share/fonts/external/`, where `/path/to/fonts/` should be replaced with the path to your font folder. A typical example would be the [USTC thesis template](https://github.com/ustctug/ustcthesis) for which a build script called `make.sh` is provided. If you have mounted your thesis draft into folder `/doc`, you would do:
-
-    cd /doc/
-    make
-    chmod 777 main.pdf
+    docker run -v /path/to/my/thesis/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive make
 
 ## 2. Building and Components
 
