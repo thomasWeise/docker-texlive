@@ -26,7 +26,8 @@ RUN export LANG=C.UTF-8 &&\
                           fonts-arphic-gkai00mp \
                           fonts-arphic-ukai \
                           fonts-arphic-uming \
-                          ttf-wqy-zenhei \
+                          ttf-wqy-microhei \
+                          ttf-wqy-zenhei \                          
                           xfonts-intl-chinese \
                           xfonts-intl-chinese-big &&\
 # install TeX Live and ghostscript
