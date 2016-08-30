@@ -9,7 +9,7 @@ echo "Welcome to the [La|LuaLa|PdfLa|XeLa]TeX compiler script."
 # strict error handling
 set -o pipefail  # trace ERR through pipes
 set -o errtrace  # trace ERR through 'time command' and other functions
-set -o nounset   # set -u : exit the script if you try to use an uninitialized variable
+set -o nounset   # set -u : exit the script if you try to use an uninitialised variable
 set -o errexit   # set -e : exit the script if any statement returns a non-true return value
 
 program="$1"
@@ -71,25 +71,43 @@ while [ "$oldAuxHash" != "$auxHash" ] || \
   fi
   
   for i in *.aux; do
-    if [ "$i" != "$document"] && \
-       [ "$i" != "$document.aux"] ; then
-      echo "Applying 'bibtex' to '$i'."
-      bibtex "$i"
+    if [ "$i" != "$document" ] && \
+       [ "$i" != "$document.aux" ] ; then
+      if [ -f "$i" ]; then
+        if grep -q "\\citation{" "$i.aux"; then
+          echo "File '$i' contains citations, so we applying 'bibtex' to it."
+          bibtex "$i"
+          echo "Finished applying 'bibtex' to '$i.aux'."
+        else
+          echo "File '$i' does not contain any citation, so we do not apply 'bibtex'."
+        fi
+      fi
     fi
   done
-  echo "Applying 'bibtex' to '$document'."
-  bibtex "$document"
+  
+  
+  if grep -q "\\citation{" "$document.aux"; then
+    echo "File '$document.aux' contains citations, so we applying 'bibtex' to it."
+    bibtex "$document"
+    echo "Finished applying 'bibtex' to '$document.aux'."
+  else
+    echo "File '$document.aux' does not contain any citation, so we do not apply 'bibtex'."
+  fi
  
   auxHash=""
   for i in *.aux; do
-    auxHashTemp=$(sha256sum "$i")
-    auxHash="$auxHash$auxHashTemp"
+    if [ -f "$i" ]; then
+      auxHashTemp=$(sha256sum "$i")
+      auxHash="$auxHash$auxHashTemp"
+    fi
   done
   
   bblHash=""
   for i in *.bbl; do
-    bblHashTemp=$(sha256sum "$i")
-    bblHash="$bblHash$bblHashTemp"
+    if [ -f "$i" ]; then
+      bblHashTemp=$(sha256sum "$i")
+      bblHash="$bblHash$bblHashTemp"
+    fi
   done
   
   echo "Finished build cycle $cycle."
