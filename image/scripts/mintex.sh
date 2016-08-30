@@ -25,46 +25,52 @@ minSize=2147483647
 bestCompiler="undefined"
 
 for var in "$@"
-do
-    loopIndex=$((loopIndex+1))
-    
-    if (("$loopIndex" > 1)) ; then
-      "$scriptDir/$var.sh" "$document"
-      currentSize=$(stat -c%s "$document.pdf")
-        
-      if (("$loopIndex" > 2)) ; then
-        if (("$loopIndex" < "$#")) ; then
-          if (("$minSize" > "$currentSize")) ; then
-            echo "The new document produced by $var has size $currentSize, which is smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will keep it."
-            minSize="$currentSize"
-            mv -f "$document.pdf" "$tempFile"
-            bestCompiler="$var"
+do    
+    if (("$loopIndex" > 0)) ; then
+      if "$scriptDir/$var.sh" "$document"; then
+        loopIndex=$((loopIndex+1))
+        currentSize=$(stat -c%s "$document.pdf")          
+        if (("$loopIndex" > 2)) ; then
+          if (("$loopIndex" < "$#")) ; then
+            if (("$minSize" > "$currentSize")) ; then
+              echo "The new document produced by $var has size $currentSize, which is smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will keep it."
+              minSize="$currentSize"
+              mv -f "$document.pdf" "$tempFile"
+              bestCompiler="$var"
+            else
+              echo "The new document produced by $var has size $currentSize, which is not smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will delete it."
+              rm -f "$document.pdf" || true
+            fi
           else
-            echo "The new document produced by $var has size $currentSize, which is not smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will delete it."
-            rm -f "$document.pdf" || true
+            if (("$minSize" > "$currentSize")) ; then
+              echo "The new document produced by $var has size $currentSize, which is smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will keep it."
+              minSize="$currentSize"
+              rm -f "$tempFile" || true
+              bestCompiler="$var"
+            else
+              echo "The new document produced by $var has size $currentSize, which is not smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will delete it."
+              mv -f "$tempFile" "$document.pdf"
+            fi
           fi
         else
-          if (("$minSize" > "$currentSize")) ; then
-            echo "The new document produced by $var has size $currentSize, which is smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will keep it."
-            minSize="$currentSize"
-            rm -f "$tempFile" || true
-            bestCompiler="$var"
-          else
-            echo "The new document produced by $var has size $currentSize, which is not smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will delete it."
-            mv -f "$tempFile" "$document.pdf"
+          minSize=$(stat -c%s "$document.pdf")
+          if (("$loopIndex" < "$#")) ; then
+            tempFile="$(tempfile -p=mintex -s=.pdf)"
+            echo "We will use file '$tempFile' as temporary storage to hold the current-smallest pdf."
+            mv -f "$document.pdf" "$tempFile"
           fi
+          bestCompiler="$var"
+          echo "Compiler $var has produced the first pdf document in this MinLaTeX run. It has size $minSize."
         fi
-      else
-        minSize=$(stat -c%s "$document.pdf")
-        if (("$loopIndex" < "$#")) ; then
-          tempFile="$(tempfile -p=mintex -s=.pdf)"
-          echo "We will use file '$tempFile' as temporary storage to hold the current-smallest pdf."
-          mv -f "$document.pdf" "$tempFile"
-        fi
-        bestCompiler="$var"
-        echo "Compiler $var has produced the first pdf document in this MinLaTeX run. It has size $minSize."
       fi
+    else
+       loopIndex=$((loopIndex+1))
     fi
 done
 
-echo "Finished MinLaTeX tool chain: produced document of size $minSize (with compiler '$bestCompiler')."
+if (("$loopIndex" > 1)) ; then
+  echo "Finished MinLaTeX tool chain: produced document of size $minSize (with compiler '$bestCompiler')."
+else
+  echo "No compiler in the tool chain could compile the file!"
+  exit 1
+fi
