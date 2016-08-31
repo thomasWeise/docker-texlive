@@ -20,18 +20,18 @@ cd "$currentDir"
 
 echo "The current directory is '$currentDir' and the folder where we look for scripts is '$scriptDir'."
 
-loopIndex=0
+decisionIndex=0
 minSize=2147483647
 bestCompiler="undefined"
 
 for var in "$@"
 do    
-    if (("$loopIndex" > 0)) ; then
+    if (("$decisionIndex" > 0)) ; then
       if "$scriptDir/$var.sh" "$document"; then
-        loopIndex=$((loopIndex+1))
+        decisionIndex=$((decisionIndex+1))
         currentSize=$(stat -c%s "$document.pdf")          
-        if (("$loopIndex" > 2)) ; then
-          if (("$loopIndex" < "$#")) ; then
+        if (("$decisionIndex" > 2)) ; then
+          if (("$decisionIndex" < "$#")) ; then
             if (("$minSize" > "$currentSize")) ; then
               echo "The new document produced by $var has size $currentSize, which is smaller than the smallest one we have so far (size $minSize by $bestCompiler), so we will keep it."
               minSize="$currentSize"
@@ -54,7 +54,7 @@ do
           fi
         else
           minSize=$(stat -c%s "$document.pdf")
-          if (("$loopIndex" < "$#")) ; then
+          if (("$decisionIndex" < "$#")) ; then
             tempFile="$(tempfile -p=mintex -s=.pdf)"
             echo "We will use file '$tempFile' as temporary storage to hold the current-smallest pdf."
             mv -f "$document.pdf" "$tempFile"
@@ -64,12 +64,16 @@ do
         fi
       fi
     else
-       loopIndex=$((loopIndex+1))
+       decisionIndex=1
     fi
 done
 
-if (("$loopIndex" > 1)) ; then
-  echo "Finished MinLaTeX tool chain: produced document of size $minSize (with compiler '$bestCompiler')."
+if (("$decisionIndex" > 1)) ; then
+  if (("$decisionIndex" < "$#")) ; then
+    mv -f "$tempFile" "$document.pdf"
+  fi
+  decisionIndex=$((decisionIndex-1))
+  echo "Finished MinLaTeX tool chain with $decisionIndex successful compilations produced document of size $minSize (with compiler '$bestCompiler')."
 else
   echo "No compiler in the tool chain could compile the file!"
   exit 1
