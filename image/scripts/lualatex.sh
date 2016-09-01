@@ -5,7 +5,7 @@
 # strict error handling
 set -o pipefail  # trace ERR through pipes
 set -o errtrace  # trace ERR through 'time command' and other functions
-set -o nounset   # set -u : exit the script if you try to use an uninitialized variable
+set -o nounset   # set -u : exit the script if you try to use an uninitialised variable
 set -o errexit   # set -e : exit the script if any statement returns a non-true return value
 
 echo "Welcome to the LuaLaTeX compiler script."
@@ -21,7 +21,7 @@ cd "$currentDir"
 echo "The current directory is '$currentDir' and the folder where we look for scripts is '$scriptDir'."
 echo "We will now invoke the 'tex.sh' tool chain."
 
-"$scriptDir/tex.sh" lualatex "${document}" --halt-on-error
+"$scriptDir/tex.sh" lualatex "${document}" --halt-on-error --interaction=nonstopmode
 
 if [[ -n "$post" ]]
 then

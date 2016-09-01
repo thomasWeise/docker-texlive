@@ -21,7 +21,7 @@ cd "$currentDir"
 echo "The current directory is '$currentDir' and the folder where we look for scripts is '$scriptDir'."
 echo "We will now invoke the 'tex.sh' tool chain."
 
-"$scriptDir/tex.sh" pdflatex "${document}" -halt-on-error
+"$scriptDir/tex.sh" pdflatex "${document}" -halt-on-error -interaction=nonstopmode
 
 if [[ -n "$post" ]]
 then
