@@ -39,6 +39,7 @@ rm "$document.out.ps" || true
 rm "$document.pdf" || true
 rm "$document.ps" || true
 rm "$document.snm" || true
+rm "$document.spl" || true
 rm "$document.synctex" || true
 rm "$document.synctex.gz" || true
 rm "$document.toc" || true
@@ -153,6 +154,7 @@ rm "$document.out" || true
 rm "$document.out.ps" || true
 rm "$document.ps" || true
 rm "$document.snm" || true
+rm "$document.spl" || true
 rm "$document.synctex" || true
 rm "$document.synctex.gz" || true
 rm "$document.toc" || true
