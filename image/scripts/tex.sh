@@ -1,8 +1,8 @@
 #!/bin/bash -
 
 ## [La|LuaLa|Pdf|XeLa]TeX Compiler Script
-## $1 executable
-## $2 document to compile
+## $2 executable
+## $1 __tex__document to compile
 
 echo "Welcome to the [La|LuaLa|PdfLa|XeLa]TeX compiler script."
 
@@ -12,43 +12,38 @@ set -o errtrace  # trace ERR through 'time command' and other functions
 set -o nounset   # set -u : exit the script if you try to use an uninitialized variable
 set -o errexit   # set -e : exit the script if any statement returns a non-true return value
 
-program="$1"
+program="$2"
 echo "You have chosen the '$program' compiler with options '${@:3}'."
 
-document="${2%%.*}"
-echo "You want to compile document '$document'."
-
-currentDir=$(pwd)
-echo "Your current working directory is '$currentDir'."
-
+# setup the (relative) paths
 scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-echo "This script is in directory '$scriptDir', where we also will look for other scripts."
+source "$scriptDir/__texSetup__.sh"
 
-cd "$currentDir"
-echo "First we will do some cleaning up temporary files from other LaTeX runs and also delete any pre-existing version of '$document.pdf'."
-rm "$document.aux" || true
-rm "$document.bbl" || true
-rm "$document.blg" || true
-rm "$document.dvi" || true
-rm "$document.ent" || true
-rm "$document.idx" || true
-rm "$document.log" || true
-rm "$document.nav" || true
-rm "$document.out" || true
-rm "$document.out.ps" || true
-rm "$document.pdf" || true
-rm "$document.ps" || true
-rm "$document.snm" || true
-rm "$document.spl" || true
-rm "$document.synctex" || true
-rm "$document.synctex.gz" || true
-rm "$document.toc" || true
-rm "$document.vrb" || true
+cd "$__tex__currentDir"
+echo "First we will do some cleaning up temporary files from other LaTeX runs and also delete any pre-existing version of '$__tex__document.pdf'."
+rm "$__tex__document.aux" || true
+rm "$__tex__document.bbl" || true
+rm "$__tex__document.blg" || true
+rm "$__tex__document.dvi" || true
+rm "$__tex__document.ent" || true
+rm "$__tex__document.idx" || true
+rm "$__tex__document.log" || true
+rm "$__tex__document.nav" || true
+rm "$__tex__document.out" || true
+rm "$__tex__document.out.ps" || true
+rm "$__tex__document.pdf" || true
+rm "$__tex__document.ps" || true
+rm "$__tex__document.snm" || true
+rm "$__tex__document.spl" || true
+rm "$__tex__document.synctex" || true
+rm "$__tex__document.synctex.gz" || true
+rm "$__tex__document.toc" || true
+rm "$__tex__document.vrb" || true
+rm "texput.log" || true
 
 echo "Now removing Unicode BOMs of .tex and .sty files, if any, as they will confuse LaTeX compilers"
-find "$currentDir" -name '*.sty' -exec "$scriptDir/removeBOM.sh" "{}" \;
-find "$currentDir" -name '*.bib' -exec "$scriptDir/removeBOM.sh" "{}" \;
-find "$currentDir" -name '*.tex' -exec "$scriptDir/removeBOM.sh" "{}" \;
+sed -i '1 s/^\xef\xbb\xbf//' "$__tex__document.tex"
+sed -i '1 s/^\xef\xbb\xbf//' *.sty || true
 
 echo "We will perform runs of $program/BibTeX until no internal files change anymore."
 
@@ -68,17 +63,17 @@ while [ "$oldAuxHash" != "$auxHash" ] || \
 
   echo "Running '$program'."
   set +o errexit
-  "$program" "${@:3}" "$document"
+  "$program" "${@:3}" "$__tex__document"
   retVal=$?
   set -o errexit
   if(("$retVal" != 0)) ; then
-    echo "Error: Program '$program' returned '$retVal' when compiling '$document'. Now exiting."
+    echo "Error: Program '$program' returned '$retVal' when compiling '$__tex__document'. Now exiting."
     exit "$retVal"
   fi
 
   for i in *.aux; do
-    if [ "$i" != "$document" ] && \
-       [ "$i" != "$document.aux" ] ; then
+    if [ "$i" != "$__tex__document" ] && \
+       [ "$i" != "$__tex__document.aux" ] ; then
       if [ -f "$i" ]; then
         if grep -q "\\citation{" "$i.aux"; then
           echo "File '$i' contains citations, so we applying 'bibtex' to it."
@@ -92,12 +87,12 @@ while [ "$oldAuxHash" != "$auxHash" ] || \
   done
 
 
-  if grep -q "\\citation{" "$document.aux"; then
-    echo "File '$document.aux' contains citations, so we applying 'bibtex' to it."
-    bibtex "$document"
-    echo "Finished applying 'bibtex' to '$document.aux'."
+  if grep -q "\\citation{" "$__tex__document.aux"; then
+    echo "File '$__tex__document.aux' contains citations, so we applying 'bibtex' to it."
+    bibtex "$__tex__document"
+    echo "Finished applying 'bibtex' to '$__tex__document.aux'."
   else
-    echo "File '$document.aux' does not contain any citation, so we do not apply 'bibtex'."
+    echo "File '$__tex__document.aux' does not contain any citation, so we do not apply 'bibtex'."
   fi
 
   auxHash=""
@@ -128,81 +123,78 @@ echo "The tool chain '$program'+BibTeX has been executed until nothing changed a
 
 laTeXWarnings=0
 laTeXWarning=""
-if [ -f "$document.log" ]; then
-  echo "We now check that the compilation was successful by 'grep'ing the log file $document.log for common errors/warnings."
+if [ -f "$__tex__document.log" ]; then
+  echo "We now check that the compilation was successful by 'grep'ing the log file $__tex__document.log for common errors/warnings."
 
-  if grep -q "LaTeX Warning: There were undefined references." "$document.log"; then
+  if grep -q "LaTeX Warning: There were undefined references." "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The document contains undefined references. Please fix them (search file $document.log for patterns 'undefined reference' and 'LaTeX Warning: Reference')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The __tex__document contains undefined references. Please fix them (search file $__tex__document.log for patterns 'undefined reference' and 'LaTeX Warning: Reference')."
   fi
-  if grep -q "LaTeX Warning: There were multiply-defined labels." "$document.log"; then
+  if grep -q "LaTeX Warning: There were multiply-defined labels." "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The document contains multiply defined labels, i.e., labels defined more than once. Please fix them (search file $document.log for pattern 'multiply-defined')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The __tex__document contains multiply defined labels, i.e., labels defined more than once. Please fix them (search file $__tex__document.log for pattern 'multiply-defined')."
   fi
-  if grep -q "Missing character: There is no" "$document.log"; then
+  if grep -q "Missing character: There is no" "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The document contains some characters which cannot be printed. Please fix them (check file $document.log for pattern 'Missing character: There is no')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The __tex__document contains some characters which cannot be printed. Please fix them (check file $__tex__document.log for pattern 'Missing character: There is no')."
   fi
-  if grep -q "Empty ‘thebibliography’ environment" "$document.log"; then
+  if grep -q "Empty ‘thebibliography’ environment" "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The document contains an empty bibliography environment. Maybe you should not use a bibliography if there are no citations? Please fix them (check file $document.log for pattern 'Empty ‘thebibliography’ environment')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The __tex__document contains an empty bibliography environment. Maybe you should not use a bibliography if there are no citations? Please fix them (check file $__tex__document.log for pattern 'Empty ‘thebibliography’ environment')."
   fi
-  if grep -q "Float too large for page by" "$document.log"; then
+  if grep -q "Float too large for page by" "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. At least one floating object such as a table or figure is too large. Please fix them (check file $document.log for pattern 'Float too large for page by')."
-  fi
-  if grep -q "Some font shapes were not available, defaults substituted" "$document.log"; then
-    laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. Some font shapes were unavailable, you should use different characters or fonts. Please fix them (check file $document.log for pattern 'Some font shapes were not available, defaults substituted')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. At least one floating object such as a table or figure is too large. Please fix them (check file $__tex__document.log for pattern 'Float too large for page by')."
   fi
 fi
 
 
 echo "We now ensure that a proper pdf is built."
 
-if [ -f "$document.pdf" ]; then
-  echo "Pdf file '$document.pdf' was produced: we will filter it in order to include all fonts."
-  "$scriptDir/filterPdf.sh" "$document.pdf"
-  rm "$document.original.pdf"
+if [ -f "$__tex__document.pdf" ]; then
+  echo "Pdf file '$__tex__document.pdf' was produced: we will filter it in order to include all fonts."
+  "$scriptDir/filterPdf.sh" "$__tex__document.pdf"
+  rm "$__tex__document.original.pdf"
 else
-  echo "No pdf file '$document.pdf' was produced."
-  if [ ! -f "$document.ps" ]; then
-    echo "No postscript (.ps) file '$document.ps' was produced."
-    if [ -f "$document.dvi" ]; then
-      echo "The dvi file '$document.dvi' was produced, converting it to postscript (.ps)."
-      dvips "$document"
+  echo "No pdf file '$__tex__document.pdf' was produced."
+  if [ ! -f "$__tex__document.ps" ]; then
+    echo "No postscript (.ps) file '$__tex__document.ps' was produced."
+    if [ -f "$__tex__document.dvi" ]; then
+      echo "The dvi file '$__tex__document.dvi' was produced, converting it to postscript (.ps)."
+      dvips "$__tex__document"
     fi
   fi
-  if [ -f "$document.ps" ]; then
-    echo "A postscript (.ps) file '$document.ps' was found, converting it to pdf."
-    "$scriptDir/filterPdf.sh" "$document.ps"
+  if [ -f "$__tex__document.ps" ]; then
+    echo "A postscript (.ps) file '$__tex__document.ps' was found, converting it to pdf."
+    "$scriptDir/filterPdf.sh" "$__tex__document.ps"
   fi
 fi
 
 echo "Now cleaning up temporary files."
-rm "$document.aux" || true
-rm "$document.bbl" || true
-rm "$document.blg" || true
-rm "$document.dvi" || true
-rm "$document.ent" || true
-rm "$document.idx" || true
+rm "$__tex__document.aux" || true
+rm "$__tex__document.bbl" || true
+rm "$__tex__document.blg" || true
+rm "$__tex__document.dvi" || true
+rm "$__tex__document.ent" || true
+rm "$__tex__document.idx" || true
 if (("$laTeXWarnings" < 1)) ; then
-  rm "$document.log" || true
+  rm "$__tex__document.log" || true
 fi
-rm "$document.nav" || true
-rm "$document.out" || true
-rm "$document.out.ps" || true
-rm "$document.ps" || true
-rm "$document.snm" || true
-rm "$document.spl" || true
-rm "$document.synctex" || true
-rm "$document.synctex.gz" || true
-rm "$document.toc" || true
-rm "$document.vrb" || true
+rm "$__tex__document.nav" || true
+rm "$__tex__document.out" || true
+rm "$__tex__document.out.ps" || true
+rm "$__tex__document.ps" || true
+rm "$__tex__document.snm" || true
+rm "$__tex__document.spl" || true
+rm "$__tex__document.synctex" || true
+rm "$__tex__document.synctex.gz" || true
+rm "$__tex__document.toc" || true
+rm "$__tex__document.vrb" || true
+rm "texput.log" || true
 
-if [ -f "$document.pdf" ]; then
-  echo "We change the access permissions of the produced document '$document.pdf' to 777."
-  chmod 777 "$document.pdf"
+if [ -f "$__tex__document.pdf" ]; then
+  echo "We change the access permissions of the produced document '$__tex__document.pdf' to 777."
+  chmod 777 "$__tex__document.pdf"
 fi
 
 if (("$laTeXWarnings" < 1)) ; then

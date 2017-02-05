@@ -9,24 +9,19 @@ set -o nounset   # set -u : exit the script if you try to use an uninitialized v
 set -o errexit   # set -e : exit the script if any statement returns a non-true return value
 
 echo "Welcome to the PdfLaTeX compiler script."
-
-document="${1%%.*}"
-echo "You want to compile document '$document'."
-post=${2:-}
-
-currentDir=$(pwd)
 scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd "$currentDir"
+source "$scriptDir/__texSetup__.sh"
 
-echo "The current directory is '$currentDir' and the folder where we look for scripts is '$scriptDir'."
+post=${2:-}
+echo "The current directory is '$__tex__currentDir' and the folder where we look for scripts is '$scriptDir'."
 echo "We will now invoke the 'tex.sh' tool chain."
 
-"$scriptDir/tex.sh" pdflatex "${document}" -halt-on-error -interaction=nonstopmode
+"$scriptDir/tex.sh" "${__tex__document}" pdflatex -halt-on-error -interaction=nonstopmode
 
 if [[ -n "$post" ]]
 then
-  echo "The post-processing command '$post' was specified, now executing '$post \"${document}.pdf\"'."
-  $post "${document}.pdf"
+  echo "The post-processing command '$post' was specified, now executing '$post \"${__tex__document}.pdf\"'."
+  $post "${__tex__document}.pdf"
 fi
 
 echo "Finished executing the PdfLaTeX compiler script."
