@@ -42,8 +42,9 @@ rm "$__tex__document.vrb" || true
 rm "texput.log" || true
 
 echo "Now removing Unicode BOMs of .tex and .sty files, if any, as they will confuse LaTeX compilers"
-sed -i '1 s/^\xef\xbb\xbf//' "$__tex__document.tex"
-sed -i '1 s/^\xef\xbb\xbf//' *.sty || true
+find "$__tex__currentDir" -name '*.sty' -exec "$scriptDir/removeBOM.sh" "{}" \;
+find "$__tex__currentDir" -name '*.bib' -exec "$scriptDir/removeBOM.sh" "{}" \;
+find "$__tex__currentDir" -name '*.tex' -exec "$scriptDir/removeBOM.sh" "{}" \;
 
 echo "We will perform runs of $program/BibTeX until no internal files change anymore."
 
