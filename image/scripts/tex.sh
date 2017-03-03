@@ -129,19 +129,19 @@ if [ -f "$__tex__document.log" ]; then
 
   if grep -q "LaTeX Warning: There were undefined references." "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The __tex__document contains undefined references. Please fix them (search file $__tex__document.log for patterns 'undefined reference' and 'LaTeX Warning: Reference')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The $__tex__document contains undefined references. Please fix them (search file $__tex__document.log for patterns 'undefined reference' and 'LaTeX Warning: Reference')."
   fi
   if grep -q "LaTeX Warning: There were multiply-defined labels." "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The __tex__document contains multiply defined labels, i.e., labels defined more than once. Please fix them (search file $__tex__document.log for pattern 'multiply-defined')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The $__tex__document contains multiply defined labels, i.e., labels defined more than once. Please fix them (search file $__tex__document.log for pattern 'multiply-defined')."
   fi
   if grep -q "Missing character: There is no" "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The __tex__document contains some characters which cannot be printed. Please fix them (check file $__tex__document.log for pattern 'Missing character: There is no')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The $__tex__document contains some characters which cannot be printed. Please fix them (check file $__tex__document.log for pattern 'Missing character: There is no')."
   fi
   if grep -q "Empty ‘thebibliography’ environment" "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
-    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The __tex__document contains an empty bibliography environment. Maybe you should not use a bibliography if there are no citations? Please fix them (check file $__tex__document.log for pattern 'Empty ‘thebibliography’ environment')."
+    laTeXWarning="${laTeXWarning}"$'\n'"${laTeXWarnings}. The $__tex__document contains an empty bibliography environment. Maybe you should not use a bibliography if there are no citations? Please fix them (check file $__tex__document.log for pattern 'Empty ‘thebibliography’ environment')."
   fi
   if grep -q "Float too large for page by" "$__tex__document.log"; then
     laTeXWarnings=$((laTeXWarnings+1))
