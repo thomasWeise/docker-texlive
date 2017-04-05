@@ -27,7 +27,10 @@ rm "$__tex__document.blg" || true
 rm "$__tex__document.dvi" || true
 rm "$__tex__document.ent" || true
 rm "$__tex__document.idx" || true
+rm "$__tex__document.loa" || true
+rm "$__tex__document.lof" || true
 rm "$__tex__document.log" || true
+rm "$__tex__document.lot" || true
 rm "$__tex__document.nav" || true
 rm "$__tex__document.out" || true
 rm "$__tex__document.out.ps" || true
@@ -178,9 +181,12 @@ rm "$__tex__document.blg" || true
 rm "$__tex__document.dvi" || true
 rm "$__tex__document.ent" || true
 rm "$__tex__document.idx" || true
+rm "$__tex__document.loa" || true
+rm "$__tex__document.lof" || true
 if (("$laTeXWarnings" < 1)) ; then
   rm "$__tex__document.log" || true
 fi
+rm "$__tex__document.lot" || true
 rm "$__tex__document.nav" || true
 rm "$__tex__document.out" || true
 rm "$__tex__document.out.ps" || true
