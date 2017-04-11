@@ -75,16 +75,17 @@ while [ "$oldAuxHash" != "$auxHash" ] || \
     exit "$retVal"
   fi
 
-  for i in *.aux; do
-    if [ "$i" != "$__tex__document" ] && \
-       [ "$i" != "$__tex__document.aux" ] ; then
-      if [ -f "$i" ]; then
-        if grep -q "\\citation{" "$i.aux"; then
-          echo "File '$i' contains citations, so we applying 'bibtex' to it."
-          bibtex "$i"
-          echo "Finished applying 'bibtex' to '$i.aux'."
+  for fullAuxFile in *.aux; do
+    auxFileName=${fullAuxFile%%.*}
+    if [ "$auxFileName" != "$__tex__document" ] && \
+       [ "$fullAuxFile" != "$__tex__document.aux" ] ; then      
+      if [ -f "$fullAuxFile" ]; then
+        if grep -q "\\citation{" "$fullAuxFile"; then
+          echo "File '$fullAuxFile' contains citations, so we applying 'bibtex' to it."
+          bibtex "$auxFileName"
+          echo "Finished applying 'bibtex' to '$fullAuxFile'."
         else
-          echo "File '$i' does not contain any citation, so we do not apply 'bibtex'."
+          echo "File '$fullAuxFile' does not contain any citation, so we do not apply 'bibtex'."
         fi
       fi
     fi
