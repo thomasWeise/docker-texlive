@@ -200,6 +200,17 @@ rm "$__tex__document.toc" || true
 rm "$__tex__document.vrb" || true
 rm "texput.log" || true
 
+for fullAuxFile in *.aux; do
+  auxFileName=${fullAuxFile%%.*}      
+  if [ -f "$fullAuxFile" ]; then
+    if grep -q "\\citation{" "$fullAuxFile"; then
+      rm "$auxFileName.bbl" || true
+      rm "$auxFileName.blg" || true
+    fi
+    rm "$fullAuxFile" || true
+  fi
+done
+
 if [ -f "$__tex__document.pdf" ]; then
   echo "We change the access permissions of the produced document '$__tex__document.pdf' to 777."
   chmod 777 "$__tex__document.pdf"
