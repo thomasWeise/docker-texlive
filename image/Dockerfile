@@ -56,6 +56,9 @@ RUN export LANG=C.UTF-8 &&\
                         texlive-pictures-doc \
                         texlive-pstricks-doc \
                         texlive-science-doc &&\
+# install pandoc
+    apt-get purge -f -y pandoc \
+                        pandoc-citeproc &&\
 # ensure that external fonts and doc folders exists
     mkdir /usr/share/fonts/external/ &&\
     mkdir /doc/ &&\
