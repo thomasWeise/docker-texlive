@@ -44,6 +44,9 @@ RUN export LANG=C.UTF-8 &&\
                           texlive-pstricks=2015.2016* \
                           texlive-science=2015.2016* \
                           texlive-xetex=2015.2016* &&\
+# install pandoc
+    apt-get install -f -y pandoc \
+                          pandoc-citeproc &&\
 # free huge amount of unused space
     apt-get purge -f -y make-doc \
                         texlive-fonts-extra-doc \
@@ -56,9 +59,6 @@ RUN export LANG=C.UTF-8 &&\
                         texlive-pictures-doc \
                         texlive-pstricks-doc \
                         texlive-science-doc &&\
-# install pandoc
-    apt-get purge -f -y pandoc \
-                        pandoc-citeproc &&\
 # ensure that external fonts and doc folders exists
     mkdir /usr/share/fonts/external/ &&\
     mkdir /doc/ &&\
