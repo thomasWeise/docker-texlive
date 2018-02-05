@@ -45,8 +45,8 @@ RUN export LANG=C.UTF-8 &&\
                           texlive-science=2015.2016* \
                           texlive-xetex=2015.2016* &&\
 # install pandoc
-    apt-get install -f -y pandoc \
-                          pandoc-citeproc &&\
+    apt-get install -f -y pandoc=1.16*\
+                          pandoc-citeproc=0.9* &&\
 # free huge amount of unused space
     apt-get purge -f -y make-doc \
                         texlive-fonts-extra-doc \

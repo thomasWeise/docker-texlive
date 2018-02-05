@@ -93,7 +93,10 @@ We also provide some utility scripts for working with `PDF`, `PS`, and `EPS` fil
 
 - `eps2pdf.sh <document>` convert the `EPS` file `<document>` to `PDF`
 - `filterPdf.sh <document>` transform a document (either in [PostScript](https://en.wikipedia.org/wiki/PostScript)/`PS`, `EPS`, or `PDF` format) to `PDF` and include as many of the fonts used inside the document into the final `PDF`. This allows to produce a `PDF` from a `.ps` file `<document>` which should display correctly on as many computers as possible. 
+- `filterPdfExact.sh <document>` does the same as `filderPdf.sh`, except that it does not re-encode the included images.
 - `sudo` is a pseudo-`sudo` command: Inside a Docker container, we don't need `sudo`. However, if you have a script or something that calls plain `sudo` (without additional arguments) just with a to-be-sudoed command, this script will emulate a `sudo`. By doing nothing.
+- `downscalePdf.sh <document> {resolution}` makes a pdf document smaller by downscaling all included images (to the specified resolution).
+- `findNonASCIIChars.sh <document>` finds non-ASCII characters in a document. In `.tex` documents, such characters may pose problems.
 
 ## 4. License
 
