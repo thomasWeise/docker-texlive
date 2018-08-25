@@ -8,7 +8,7 @@
 # software components inside the image are under the respective
 # licenses chosen by their respective copyright holders.
 #
-FROM thomas-weise/docker-pandoc
+FROM thomasweise/docker-pandoc
 MAINTAINER Thomas Weise <tweise@ustc.edu.cn>
 
 RUN mkdir /usr/share/fonts/external/ &&\
