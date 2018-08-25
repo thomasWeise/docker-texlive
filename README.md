@@ -1,22 +1,25 @@
-# [thomasWeise/texlive](https://hub.docker.com/r/thomasweise/texlive/)
+# [thomasWeise/texlive](http://hub.docker.com/r/thomasweise/texlive/)
 
-[![Image Layers and Size](https://imagelayers.io/badge/thomasweise/texlive:latest.svg)](https://imagelayers.io/?images=thomasweise%2Ftexlive:latest)
-[![Docker Pulls](https://img.shields.io/docker/pulls/thomasweise/texlive.svg)](https://hub.docker.com/r/thomasweise/texlive/)
-[![Docker Stars](https://img.shields.io/docker/stars/thomasweise/texlive.svg)](https://hub.docker.com/r/thomasweise/texlive/)
+[![Image Layers and Size](http://imagelayers.io/badge/thomasweise/texlive:latest.svg)](http://imagelayers.io/?images=thomasweise%2Ftexlive:latest)
+[![Docker Pulls](http://img.shields.io/docker/pulls/thomasweise/texlive.svg)](http://hub.docker.com/r/thomasweise/texlive/)
+[![Docker Stars](http://img.shields.io/docker/stars/thomasweise/texlive.svg)](http://hub.docker.com/r/thomasweise/texlive/)
 
-This is a Docker image containing a [TeX Live](https://en.wikipedia.org/wiki/TeX_Live) installation (version 2015.2016) with several support <a href="#user-content-3-scripts">scripts</a> for easing the compilation of [LaTeX](https://en.wikipedia.org/wiki/LaTeX) files to [PDF](https://en.wikipedia.org/wiki/Portable_Document_Format). The goal is to provide a unified environment for compiling LaTeX documents with predictable and reproducible behavior, while decreasing the effort needed to install and maintain the LaTeX installation. This image is designed to be especially suitable for a Chinese audience and comes with several pre-installed open Chinese fonts.
+**This is a major overhaul of the [`thomasWeise/texlive`](http://hub.docker.com/r/thomasweise/texlive/) image.
+It is now based [`thomasweise/docker-pandoc`](http://hub.docker.com/r/thomasweise/docker-pandoc/), which, in turn, is based on [`thomasweise/docker-texlive-full`](http://hub.docker.com/r/thomasweise/docker-texlive-full/). This means it got bigger, but it now features the newest release of `pandoc`, [`TeX Live`](http://en.wikipedia.org/wiki/TeX_Live), and includes more pandoc filters than before. For the original version of the container, refer to tag [1.0.0](http://github.com/thomasWeise/docker-texlive/releases/tag/1.0.0).**
+
+This is a Docker image containing a [`TeX Live`](http://en.wikipedia.org/wiki/TeX_Live) installation (version 2015.2016) with several support <a href="#user-content-3-scripts">scripts</a> for easing the compilation of [LaTeX](http://en.wikipedia.org/wiki/LaTeX) files to [PDF](http://en.wikipedia.org/wiki/Portable_Document_Format). The goal is to provide a unified environment for compiling LaTeX documents with predictable and reproducible behavior, while decreasing the effort needed to install and maintain the LaTeX installation. This image is designed to be especially suitable for a Chinese audience and comes with several pre-installed open Chinese fonts.
 
 ## 0. Installing Docker
 
 Docker can be installed following the guidelines below:
 
-* for [Linux](https://docs.docker.com/linux/step_one/), you can run  `curl -fsSL https://get.docker.com/ | sh` on your command line and everything is done automatically (if you have `curl` installed, which is normally the case),
-* for [Windows](https://docs.docker.com/windows/step_one/)
-* for [Mac OS](https://docs.docker.com/mac/step_one/)
+* for [Linux](http://docs.docker.com/linux/step_one/), you can run  `curl -fsSL http://get.docker.com/ | sh` on your command line and everything is done automatically (if you have `curl` installed, which is normally the case),
+* for [Windows](http://docs.docker.com/windows/step_one/)
+* for [Mac OS](http://docs.docker.com/mac/step_one/)
 
 ## 1. Usage
 
-Below, we discuss the various parameters that you can pass to this image when running it. If you have installed Docker, you do not need to perform any additional installations: The first time you do `docker run -t -i thomasweise/texlive` or something like that (see below), the image will automatically be downloaded and installed from [docker hub](https://hub.docker.com/).
+Below, we discuss the various parameters that you can pass to this image when running it. If you have installed Docker, you do not need to perform any additional installations: The first time you do `docker run -t -i thomasweise/texlive` or something like that (see below), the image will automatically be downloaded and installed from [docker hub](http://hub.docker.com/).
 
 There are two basic use cases of this image:
 
@@ -35,7 +38,7 @@ The common form of the command is as follows:
 Where
 
 * `/my/path/to/document/` must be replaced with the path to the folder containing the LaTeX document that you want to compile. This folder will be made available as folder `/doc/` inside the container. If you use the image without command parameters (see below), you will get a bash command prompt inside this `/doc/` folder.
-* Sometimes you may need additional fonts to compile your LaTeX document. An example for this situation is if you use something like the [USTC thesis template](https://github.com/ustctug/ustcthesis), which needs fonts such as SimHei from Windows, which are not available under Linux. In this case, you can use the *optional* `-v /path/to/fonts/:/usr/share/fonts/external/` parameter. Here, `/path/to/fonts/` must be replaced with a path to a folder containing these fonts. If you do not need additional fonts, you can leave the whole `-v /path/to/fonts/:/usr/share/fonts/external/` away.
+* Sometimes you may need additional fonts to compile your LaTeX document. An example for this situation is if you use something like the [USTC thesis template](http://github.com/ustctug/ustcthesis), which needs fonts such as SimHei from Windows, which are not available under Linux. In this case, you can use the *optional* `-v /path/to/fonts/:/usr/share/fonts/external/` parameter. Here, `/path/to/fonts/` must be replaced with a path to a folder containing these fonts. If you do not need additional fonts, you can leave the whole `-v /path/to/fonts/:/usr/share/fonts/external/` away.
 * *Optinally* you can also provide a single command that should be executed when the container starts (along with its arguments). This is what the `COMMAND ARG1 ARG2...` in the above command line stand for. If you specify such a command, the container will start up, execute the command, and then shut down. If you do not provide such a command, the container will start up and provide you a bash prompt in folder `/doc/`.
 
 For compiling some document named `myDocument.tex` in folder `/my/path/to/document/` with `xelatex.sh` and using additional fonts in folder `/path/to/fonts/`, you would type something like the command below into a normal terminal (Linux), the *Docker Quickstart Terminal* (Mac OS), or the *Docker Toolbox Terminal* (Windows):
@@ -58,7 +61,7 @@ If you just want to use (or snoop around in) the image without mounting external
 
     docker run -t -i thomasweise/texlive
 
-Another example for the use of the syntax for directly passing in a single command for execution is compiling a thesis based on the [USTC thesis template](https://github.com/ustctug/ustcthesis). Such documents can be compiled using `make`, so you could do something like
+Another example for the use of the syntax for directly passing in a single command for execution is compiling a thesis based on the [USTC thesis template](http://github.com/ustctug/ustcthesis). Such documents can be compiled using `make`, so you could do something like
 
     docker run -v /path/to/my/thesis/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive make
 
@@ -81,10 +84,10 @@ We provide a set of scripts (in `/bin/`) that can be used for compiling LaTeX do
 
 Usually, LaTeX compilation means to call the LaTeX compiler program, then BibTeX, then the compiler again, and then some conversion program from the respective compiler output format to PDF. With the compiler scripts, we try to condense these calls into a single program invocation.
 
-- `latex.sh <document>` compile the LaTeX `<document>` with [LaTeX](https://en.wikipedia.org/wiki/LaTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
-- `lualatex.sh <document>` compile the LaTeX `<document>` with [LuaLaTeX](https://en.wikipedia.org/wiki/LuaTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
-- `pdflatex.sh <document>` compile the LaTeX `<document>` with [PdfLaTeX](https://en.wikipedia.org/wiki/pdfTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
-- `xelatex.sh <document>` compile the LaTeX `<document>` with [XeLaTeX](https://en.wikipedia.org/wiki/XeLaTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
+- `latex.sh <document>` compile the LaTeX `<document>` with [LaTeX](http://en.wikipedia.org/wiki/LaTeX) (also do [BibTeX](http://en.wikipedia.org/wiki/BibTeX))
+- `lualatex.sh <document>` compile the LaTeX `<document>` with [LuaLaTeX](http://en.wikipedia.org/wiki/LuaTeX) (also do [BibTeX](http://en.wikipedia.org/wiki/BibTeX))
+- `pdflatex.sh <document>` compile the LaTeX `<document>` with [PdfLaTeX](http://en.wikipedia.org/wiki/pdfTeX) (also do [BibTeX](http://en.wikipedia.org/wiki/BibTeX))
+- `xelatex.sh <document>` compile the LaTeX `<document>` with [XeLaTeX](http://en.wikipedia.org/wiki/XeLaTeX) (also do [BibTeX](http://en.wikipedia.org/wiki/BibTeX))
 - `mintex.sh <document> <compiler1> <compiler2> ...` allows you to invoke an arbitrary selection of the above compiler scripts to produce the smallest `pdf`. Doing `mintex.sh mydoc latex lualatex xelatex`, for instance, will compile `mydoc.tex` with `latex.sh`, `lualatex.sh`, and `xelatex.sh` and keep the smallest resulting `pdf` file.
 
 ### 3.2. Utility Scripts
@@ -92,15 +95,14 @@ Usually, LaTeX compilation means to call the LaTeX compiler program, then BibTeX
 We also provide some utility scripts for working with `PDF`, `PS`, and `EPS` files.
 
 - `eps2pdf.sh <document>` convert the `EPS` file `<document>` to `PDF`
-- `filterPdf.sh <document>` transform a document (either in [PostScript](https://en.wikipedia.org/wiki/PostScript)/`PS`, `EPS`, or `PDF` format) to `PDF` and include as many of the fonts used inside the document into the final `PDF`. This allows to produce a `PDF` from a `.ps` file `<document>` which should display correctly on as many computers as possible. 
-- `filterPdfExact.sh <document>` does the same as `filderPdf.sh`, except that it does not re-encode the included images.
+- `filterPdf.sh <document>` transform a document (either in [PostScript](http://en.wikipedia.org/wiki/PostScript)/`PS`, `EPS`, or `PDF` format) to `PDF` and include as many of the fonts used inside the document into the final `PDF`. This allows to produce a `PDF` from a `.ps` file `<document>` which should display correctly on as many computers as possible.
 - `sudo` is a pseudo-`sudo` command: Inside a Docker container, we don't need `sudo`. However, if you have a script or something that calls plain `sudo` (without additional arguments) just with a to-be-sudoed command, this script will emulate a `sudo`. By doing nothing.
 - `downscalePdf.sh <document> {resolution}` makes a pdf document smaller by downscaling all included images (to the specified resolution).
 - `findNonASCIIChars.sh <document>` finds non-ASCII characters in a document. In `.tex` documents, such characters may pose problems.
 
 ## 4. License
 
-This image is licensed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007, which you can find in file [LICENSE.md](https://github.com/thomasWeise/docker-texlive/blob/master/LICENSE.md). The license applies to the way the image is built, while the software components inside the image are under the respective licenses chosen by their respective copyright holders.
+This image is licensed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007, which you can find in file [LICENSE.md](http://github.com/thomasWeise/docker-texlive/blob/master/LICENSE.md). The license applies to the way the image is built, while the software components inside the image are under the respective licenses chosen by their respective copyright holders.
 
 ## 5. Contact
 

@@ -23,3 +23,10 @@ hs_err_pid*
 /out
 /.gradle
 /dependency-reduced-pom.xml
+.Rproj.user
+
+.Rhistory
+.RData
+.Ruserdata
+docker-texlive.Rproj
+*.Rproj
