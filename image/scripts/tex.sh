@@ -159,7 +159,7 @@ echo "We now ensure that a proper pdf is built."
 if [ -f "$__tex__document.pdf" ]; then
   echo "Pdf file '$__tex__document.pdf' was produced: we will filter it in order to include all fonts."
   "$scriptDir/filterPdf.sh" "$__tex__document.pdf"
-  rm "$__tex__document.original.pdf"
+  rm -f "$__tex__document.original.pdf"
 else
   echo "No pdf file '$__tex__document.pdf' was produced."
   if [ ! -f "$__tex__document.ps" ]; then
