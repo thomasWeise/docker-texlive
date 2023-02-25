@@ -21,7 +21,7 @@ fi
 
 __tex__relativeDocument="${__tex__relativeDocument:-}"
 if [[ -z "$__tex__relativeDocument" ]]; then
-  export __tex__relativeDocument=$(python -c "import os.path; print os.path.relpath('$__tex__fullDocument','${__tex__currentDir}')")
+  export __tex__relativeDocument=$(python3 -c "import os.path; print(os.path.relpath('$__tex__fullDocument','${__tex__currentDir}'))")
 fi
 
 __tex__document="${__tex__document:-}"
